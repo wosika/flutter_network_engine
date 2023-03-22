@@ -6,7 +6,7 @@ import 'package:flutter_network_engine/flutter_network_engine.dart';
 
 import '../network/model_factory.dart';
 
-class BaseResult<T> with IResult<T> {
+class BaseResult<T> extends IResult<T> {
   int? code;
 
   T? data;
@@ -49,12 +49,13 @@ class BaseResult<T> with IResult<T> {
     return _isSuccess == true;
   }
 
-  BaseResult.fromResponse(Response? response, [dynamic error]) {
-    code = response?.statusCode;
+  BaseResult.fromResponse(Response<T>? response, [dynamic error]) {
+    code = response?.statusCode??-1;
     _isSuccess = code! >= 200 && code! < 300;
     message = response?.statusMessage;
-    log("解析数据");
+
     try {
+      log("解析数据");
       var json = jsonDecode(response!.data.toString());
 
       if (json is List) {
@@ -84,8 +85,7 @@ class BaseResult<T> with IResult<T> {
       }
     } catch (e) {
       //直接将data返回
-      data = response?.data as T?;
+      data = response?.data as T;
     }
-
   }
 }

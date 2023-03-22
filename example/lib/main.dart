@@ -1,10 +1,13 @@
+import 'dart:developer';
+
+import 'package:example/model/Weather_model.dart';
 import 'package:example/model/account_model.dart';
 import 'package:example/network/http_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_network_engine/flutter_network_engine.dart';
 
-var dioHttpEngine = DioHttpEngine(HttpHelper.onResult);
-
+var dioHttpEngine =
+    DioHttpEngine(HttpHelper.onResult, baseUrl: "https://apis.juhe.cn");
 
 void main() {
   runApp(const MyApp());
@@ -29,7 +32,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
-
   final String title;
 
   @override
@@ -39,9 +41,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String resultData = "";
 
-  Future<void> _incrementCounter() async {
-      var postFuture = await dioHttpEngine.postFuture<AccountModel>("");
-      var data = postFuture.getData();
+  void _incrementCounter() async {
+    String url = "https://apis.juhe.cn/simpleWeather/query";
+    var param = {"city": "雅安", "key": "6880a0c6e99ba78cbbf7207fd35528b3"};
+    var postFuture = await dioHttpEngine.getFuture<WeatherModel?>(url, queryParameters: param);
+
+    var error = postFuture.getError();
+    log(error);
+
+
+    setState(() {
+      resultData = postFuture.getData().toString();
+    });
   }
 
   @override
@@ -64,10 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Text(
                 resultData,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headlineMedium,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
             ],
           ),
