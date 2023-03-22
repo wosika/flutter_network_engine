@@ -1,4 +1,6 @@
+
 import 'package:dio/dio.dart';
+
 import 'i_result.dart';
 
 ///网络请求成功,并且服务端code 返回值成功 object
@@ -11,7 +13,7 @@ typedef OnSuccessList<T> = Function(List<T>? list);
 typedef OnError = Function(int? code, String? msg);
 
 ///创建基类数据
-typedef OnResult = Function<T>(T? t, [dynamic error]);
+typedef OnResult = Function(Response? response, [dynamic error]);
 
 typedef OnShowLoading = Function(bool isShow, [String? msg]);
 

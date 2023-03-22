@@ -9,7 +9,7 @@ mixin  IResult<T> {
   T? getData();
 
   //获取集合数据
-  List<T>? getListData();
+  List<T> getListData();
 
   //获取任意类型的错误
   dynamic getError();

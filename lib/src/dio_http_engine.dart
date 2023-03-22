@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter_network_engine/src/i_result.dart';
 import 'i_http.dart';
+import 'i_result.dart';
+
+
 
 class DioHttpEngine extends IHttp {
   Dio? _dio;
