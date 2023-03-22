@@ -16,10 +16,6 @@ typedef OnResult = Function<T>(T? t, [dynamic error]);
 typedef OnShowLoading = Function(bool isShow, [String? msg]);
 
 abstract class IHttp {
-  void init(
-      {OnShowLoading? onShowLoading,
-      Function(String? message)? onShowError,
-      OnResult? onResult});
 
   void destroy();
 

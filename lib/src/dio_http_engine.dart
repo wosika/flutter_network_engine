@@ -7,27 +7,22 @@ import 'package:flutter_network_engine/src/i_result.dart';
 import 'i_http.dart';
 
 class DioHttpEngine extends IHttp {
-  @override
-  void init(
-      {OnShowLoading? onShowLoading,
-      Function(String? message)? onShowError,
-      OnResult? onResult}) {
-    _showLoading = onShowLoading;
-    _showError = onShowError;
-    _onResult = onResult;
-  }
-
-
   Dio? _dio;
   Duration _timeout = const Duration(seconds: 8000);
   String _baseUrl = "";
   bool _printLog = true;
-
   OnShowLoading? _showLoading;
   Function(String?)? _showError;
-  OnResult? _onResult;
+  final OnResult _onResult;
 
-  DioHttpEngine({Duration? timeout, String? baseUrl, bool? printLog}) {
+  DioHttpEngine(
+    this._onResult, {
+    Duration? timeout,
+    String? baseUrl,
+    bool? printLog,
+    OnShowLoading? onShowLoading,
+    Function(String? message)? onShowError,
+  }) {
     if (timeout != null) {
       _timeout = timeout;
     }
@@ -37,6 +32,10 @@ class DioHttpEngine extends IHttp {
     if (printLog != null) {
       _printLog = printLog;
     }
+
+    _showLoading = onShowLoading;
+    _showError = onShowError;
+
     _dio = _initDio();
   }
 
@@ -121,7 +120,7 @@ class DioHttpEngine extends IHttp {
           data: method == 'post' ? queryParameters : null,
           options: options ?? Options(method: method),
           cancelToken: cancelToken);
-      return _onResult?.call(response, null);
+      return _onResult.call(response, null);
     } on DioError catch (e) {
       if (_printLog && e.type != DioErrorType.cancel) {
         log("网络请求错误", error: e);
@@ -130,7 +129,7 @@ class DioHttpEngine extends IHttp {
       if (e.type != DioErrorType.cancel && (isShowError)) {
         _showError?.call(errorText ?? _getErrorDes(e));
       }
-      return _onResult?.call(e.response, e);
+      return _onResult.call(e.response, e);
     } catch (e) {
       if (_printLog) {
         log("网络请求错误", error: e);
@@ -138,7 +137,7 @@ class DioHttpEngine extends IHttp {
       if (isShowError) {
         _showError?.call(errorText ?? e.toString());
       }
-      return _onResult?.call(null, e);
+      return _onResult.call(null, e);
     } finally {
       if (isShowLoading) {
         _showLoading?.call(false);
