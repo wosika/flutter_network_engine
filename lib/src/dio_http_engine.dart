@@ -69,7 +69,7 @@ class DioHttpEngine extends IHttp {
   }
 
   @override
-  Future<void> request<T>(String method, String url,
+  Future<void> request<T>(RequestMethod method, String url,
       {Map<String, dynamic>? queryParameters,
       bool isList = false,
       Options? options,
@@ -119,8 +119,8 @@ class DioHttpEngine extends IHttp {
     }
     try {
       Response response = await _dio!.request(url,
-          queryParameters: method == 'get' ? queryParameters : null,
-          data: method == 'post' ? queryParameters : null,
+          queryParameters: method == RequestMethod.get ? queryParameters : null,
+          data: method == RequestMethod.post ? queryParameters : null,
           options: options ?? Options(method: method.name),
           cancelToken: cancelToken);
       return ResponseResult<T>(response: response,jsonParser: _jsonParser);
@@ -196,7 +196,7 @@ class DioHttpEngine extends IHttp {
       bool isShowError = false,
       String? loadingText,
       String? errorText}) {
-    request<T>("post", url,
+    request<T>(RequestMethod.post, url,
         queryParameters: queryParameters,
         isList: isList,
         options: options,
@@ -222,7 +222,7 @@ class DioHttpEngine extends IHttp {
       bool isShowError = false,
       String? loadingText,
       String? errorText}) {
-    request<T>("get", url,
+    request<T>(RequestMethod.get, url,
         queryParameters: queryParameters,
         isList: isList,
         options: options,

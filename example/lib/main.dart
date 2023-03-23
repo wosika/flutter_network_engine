@@ -51,12 +51,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() async {
     String url = "https://apis.juhe.cn/simpleWeather/query";
-
     var param = {"city": "雅安", "key": "6880a0c6e99ba78cbbf7207fd35528b3"};
-
     var resp = await dioHttpEngine.requestFuture<WeatherModel>(RequestMethod.get,url,
         queryParameters: param);
-
 
     setState(() {
       resultData = resp.getData()?.errorCode?.toString() ?? "123";
