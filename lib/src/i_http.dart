@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 
 import 'i_result.dart';
@@ -12,13 +11,12 @@ typedef OnSuccessList<T> = Function(List<T>? list);
 ///请求失败
 typedef OnError = Function(int? code, String? msg);
 
-///创建基类数据
-typedef OnResult = Function(Response? response, [dynamic error]);
-
 typedef OnShowLoading = Function(bool isShow, [String? msg]);
 
-abstract class IHttp {
+//json解析函数
+typedef JsonParser = T? Function<T>(dynamic json);
 
+abstract class IHttp {
   void destroy();
 
   void setBaseUrl(String url);
@@ -35,7 +33,7 @@ abstract class IHttp {
     OnError? onError,
   });
 
-  Future<IResult<T>> requestFuture<T>(String method, String url,
+  Future<ResponseResult<T>> requestFuture<T>(String method, String url,
       {Map<String, dynamic>? queryParameters,
       Options? options,
       CancelToken? cancelToken});

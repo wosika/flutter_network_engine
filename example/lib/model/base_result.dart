@@ -6,7 +6,7 @@ import 'package:flutter_network_engine/flutter_network_engine.dart';
 
 import '../network/model_factory.dart';
 
-class BaseResult<T> extends IResult<T> {
+class BaseResult<T> with IResult<T> {
   int? code;
 
   T? data;
@@ -57,7 +57,6 @@ class BaseResult<T> extends IResult<T> {
     try {
       log("解析数据");
       var json = jsonDecode(response!.data.toString());
-
       if (json is List) {
         log("解析数组数据");
         for (var item in json) {
@@ -85,7 +84,11 @@ class BaseResult<T> extends IResult<T> {
       }
     } catch (e) {
       //直接将data返回
-      data = response?.data as T;
+      try{
+        data = response?.data as T;
+      }catch(e){
+        log(e.toString());
+      }
     }
   }
 }

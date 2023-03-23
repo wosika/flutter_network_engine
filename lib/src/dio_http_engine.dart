@@ -6,8 +6,6 @@ import 'package:dio/dio.dart';
 import 'i_http.dart';
 import 'i_result.dart';
 
-
-
 class DioHttpEngine extends IHttp {
   Dio? _dio;
   Duration _timeout = const Duration(seconds: 8000);
@@ -15,15 +13,15 @@ class DioHttpEngine extends IHttp {
   bool _printLog = true;
   OnShowLoading? _showLoading;
   Function(String?)? _showError;
-  final OnResult _onResult;
+  JsonParser? _jsonParser;
 
-  DioHttpEngine(
-    this._onResult, {
+  DioHttpEngine({
     Duration? timeout,
     String? baseUrl,
     bool? printLog,
     OnShowLoading? onShowLoading,
     Function(String? message)? onShowError,
+    JsonParser? jsonParser
   }) {
     if (timeout != null) {
       _timeout = timeout;
@@ -35,8 +33,10 @@ class DioHttpEngine extends IHttp {
       _printLog = printLog;
     }
 
+
     _showLoading = onShowLoading;
     _showError = onShowError;
+    _jsonParser = jsonParser;
 
     _dio = _initDio();
   }
@@ -101,7 +101,7 @@ class DioHttpEngine extends IHttp {
   }
 
   @override
-  Future<IResult<T>> requestFuture<T>(String method, String url,
+  Future<ResponseResult<T>> requestFuture<T>(String method, String url,
       {Map<String, dynamic>? queryParameters,
       Options? options,
       CancelToken? cancelToken,
@@ -117,12 +117,12 @@ class DioHttpEngine extends IHttp {
       _showLoading?.call(true, loadingText);
     }
     try {
-      Response<T> response = await _dio!.request<T>(url,
+      Response response = await _dio!.request(url,
           queryParameters: method == 'get' ? queryParameters : null,
           data: method == 'post' ? queryParameters : null,
           options: options ?? Options(method: method),
           cancelToken: cancelToken);
-      return _onResult.call(response, null);
+      return ResponseResult<T>(response: response,jsonParser: _jsonParser);
     } on DioError catch (e) {
       if (_printLog && e.type != DioErrorType.cancel) {
         log("网络请求错误", error: e);
@@ -131,7 +131,7 @@ class DioHttpEngine extends IHttp {
       if (e.type != DioErrorType.cancel && (isShowError)) {
         _showError?.call(errorText ?? _getErrorDes(e));
       }
-      return _onResult.call(e.response, e);
+      return ResponseResult<T>(error: e,jsonParser: _jsonParser);
     } catch (e) {
       if (_printLog) {
         log("网络请求错误", error: e);
@@ -139,7 +139,7 @@ class DioHttpEngine extends IHttp {
       if (isShowError) {
         _showError?.call(errorText ?? e.toString());
       }
-      return _onResult.call(null, e);
+      return ResponseResult<T>(error: e,jsonParser: _jsonParser);
     } finally {
       if (isShowLoading) {
         _showLoading?.call(false);
@@ -147,7 +147,7 @@ class DioHttpEngine extends IHttp {
     }
   }
 
-  Future<IResult<T>> getFuture<T>(String url,
+  Future<ResponseResult<T>> getFuture<T>(String url,
       {Map<String, dynamic>? queryParameters,
       Options? options,
       CancelToken? cancelToken,
@@ -165,7 +165,7 @@ class DioHttpEngine extends IHttp {
         errorText: errorText);
   }
 
-  Future<IResult<T>> postFuture<T>(String url,
+  Future<ResponseResult<T>> postFuture<T>(String url,
       {Map<String, dynamic>? queryParameters,
       Options? options,
       CancelToken? cancelToken,
