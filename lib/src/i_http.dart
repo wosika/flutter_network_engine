@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_network_engine/src/request_type.dart';
 
 import 'i_result.dart';
 
@@ -21,8 +22,7 @@ abstract class IHttp {
 
   void setBaseUrl(String url);
 
-  Future<void> request<T>(
-    String method,
+  Future<void> request<T>(RequestMethod method,
     String url, {
     Map<String, dynamic>? queryParameters,
     bool isList,
@@ -33,7 +33,7 @@ abstract class IHttp {
     OnError? onError,
   });
 
-  Future<ResponseResult<T>> requestFuture<T>(String method, String url,
+  Future<ResponseResult<T>> requestFuture<T>(RequestMethod method, String url,
       {Map<String, dynamic>? queryParameters,
       Options? options,
       CancelToken? cancelToken});

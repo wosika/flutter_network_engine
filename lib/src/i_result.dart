@@ -38,18 +38,21 @@ class ResponseResult<T> with IResult<T> {
     if (error != null && error is DioError) {
       this.response = (error as DioError).response;
     }
+
     try {
       var json = jsonDecode(response?.data);
       if (json is List) {
-        log("解析数组数据");
+       // log("解析数组数据");
         _parseListData(json);
       } else {
         parseSingleData(json);
       }
     } catch (e) {
       //直接将data返回
-      data = response?.data as T;
+      log(e.toString());
+      data = response?.data as T?;
     }
+
   }
 
   void parseSingleData(json) {

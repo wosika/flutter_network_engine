@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_network_engine/src/request_type.dart';
 import 'i_http.dart';
 import 'i_result.dart';
 
@@ -101,7 +102,7 @@ class DioHttpEngine extends IHttp {
   }
 
   @override
-  Future<ResponseResult<T>> requestFuture<T>(String method, String url,
+  Future<ResponseResult<T>> requestFuture<T>(RequestMethod method, String url,
       {Map<String, dynamic>? queryParameters,
       Options? options,
       CancelToken? cancelToken,
@@ -110,7 +111,7 @@ class DioHttpEngine extends IHttp {
       String? loadingText,
       String? errorText}) async {
     if (options != null) {
-      options.method = method;
+      options.method = method.name;
     }
 
     if (isShowLoading) {
@@ -120,7 +121,7 @@ class DioHttpEngine extends IHttp {
       Response response = await _dio!.request(url,
           queryParameters: method == 'get' ? queryParameters : null,
           data: method == 'post' ? queryParameters : null,
-          options: options ?? Options(method: method),
+          options: options ?? Options(method: method.name),
           cancelToken: cancelToken);
       return ResponseResult<T>(response: response,jsonParser: _jsonParser);
     } on DioError catch (e) {
@@ -155,7 +156,7 @@ class DioHttpEngine extends IHttp {
       bool isShowError = false,
       String? loadingText,
       String? errorText}) {
-    return requestFuture("get", url,
+    return requestFuture(RequestMethod.get, url,
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,
@@ -173,7 +174,7 @@ class DioHttpEngine extends IHttp {
       bool isShowError = false,
       String? loadingText,
       String? errorText}) {
-    return requestFuture("post", url,
+    return requestFuture(RequestMethod.post, url,
         queryParameters: queryParameters,
         options: options,
         cancelToken: cancelToken,

@@ -1,18 +1,21 @@
-import 'dart:convert';
 import 'dart:developer';
-import 'package:dio/dio.dart';
-import 'package:example/model/base_result.dart';
 import 'package:example/network/model_factory.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_network_engine/flutter_network_engine.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 import 'model/weather_model.dart';
 
 //全局的网络请求引擎
 var dioHttpEngine = DioHttpEngine(
     baseUrl: "https://apis.juhe.cn", jsonParser: ModelFactory.generateOBJ)
-  ..addInterceptor(PrettyDioLogger());
+  ..addInterceptor(TalkerDioLogger(
+    settings: const TalkerDioLoggerSettings(
+      printRequestHeaders: true,
+      printResponseHeaders: true,
+      printResponseMessage: true,
+    ),
+  ));
 
 void main() {
   runApp(const MyApp());
@@ -51,13 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var param = {"city": "雅安", "key": "6880a0c6e99ba78cbbf7207fd35528b3"};
 
-    var postFuture = await dioHttpEngine.getFuture<WeatherModel>(url, queryParameters: param);
+    var resp = await dioHttpEngine.requestFuture<WeatherModel>(RequestMethod.get,url,
+        queryParameters: param);
 
-    var error = postFuture.getError();
-    log(error.toString());
 
     setState(() {
-      resultData = postFuture.getData()?.result?.realtime?.direct??"";
+      resultData = resp.getData()?.errorCode?.toString() ?? "123";
     });
   }
 
