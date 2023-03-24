@@ -38,7 +38,14 @@ dependencies:
 
   dio: 5.0.3
   flutter_network_engine:
-    path: ../
+#    path: ../
+    # 远程git集成
+    git:
+      #仓库地址
+      url: http://git1.51xinwei.com:20001/app/flutter/flutter_network_engine.git
+      #指定分支
+      ref: dev
+
 
   talker_dio_logger : 1.3.0
 
