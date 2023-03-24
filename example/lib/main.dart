@@ -8,7 +8,13 @@ import 'model/weather_model.dart';
 
 //全局的网络请求引擎
 var dioHttpEngine = DioHttpEngine(
-    baseUrl: "https://apis.juhe.cn", jsonParser: ModelFactory.generateOBJ)
+    timeout: const Duration(seconds: 8),
+    baseUrl: "https://apis.juhe.cn",
+    printLog: true,
+    jsonParser: ModelFactory.generateOBJ,
+    onShowError: (String? message)=>{},
+    onShowLoading: (bool isShow,[String? message])=>{}
+)
   ..addInterceptor(TalkerDioLogger(
     settings: const TalkerDioLoggerSettings(
       printRequestHeaders: true,
@@ -52,7 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter() async {
     String url = "https://apis.juhe.cn/simpleWeather/query";
     var param = {"city": "雅安", "key": "6880a0c6e99ba78cbbf7207fd35528b3"};
-    var resp = await dioHttpEngine.requestFuture<WeatherModel>(RequestMethod.get,url,
+    var resp = await dioHttpEngine.requestFuture<WeatherModel>(
+        RequestMethod.get, url,
         queryParameters: param);
 
     setState(() {

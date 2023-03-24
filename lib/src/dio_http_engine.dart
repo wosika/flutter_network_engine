@@ -34,7 +34,6 @@ class DioHttpEngine extends IHttp {
       _printLog = printLog;
     }
 
-
     _showLoading = onShowLoading;
     _showError = onShowError;
     _jsonParser = jsonParser;

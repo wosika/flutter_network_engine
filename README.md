@@ -1,39 +1,27 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+## 网络请求框架
+基于Dio实现的网络请求框架
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+##简单使用：
+#使用示例可以参考example中
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
 ```
+//初始化
 
-## Additional information
+var dioHttpEngine = DioHttpEngine(
+    //网络请求超时时间
+    timeout: const Duration(seconds: 8),
+    //基类url
+    baseUrl: "https://apis.juhe.cn", 
+    //json解析函数
+    jsonParser: ModelFactory.generateOBJ ,
+    //是否显示log
+    printlog:true,
+    //网络请求错误提示函数
+    onShowError: (String? message)=>{},
+    //网络请求加载中提示函数
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+    onShowLoading: (bool isShow,[String? message])=>{}
+  ));
+
+
+```
