@@ -56,15 +56,15 @@ class ResponseResult<T> with IResult<T> {
   }
 
   void parseSingleData(json) {
-    log("解析单个数据");
+   // log("解析单个数据");
     if (T is String) {
-      log("泛型是String");
+   //   log("泛型是String");
       data = json.toString() as T;
     } else if (T is Map) {
-      log("泛型是Map");
+   //   log("泛型是Map");
       data = json as T?;
     } else {
-      log("泛型是不是string也不是map");
+    //  log("泛型是不是string也不是map");
       data = _jsonParser?.call(json);
     }
   }
