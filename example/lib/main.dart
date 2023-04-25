@@ -1,10 +1,9 @@
-import 'dart:developer';
 import 'package:example/network/model_factory.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_network_engine/flutter_network_engine.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
-
 import 'model/weather_model.dart';
+
 
 //全局的网络请求引擎
 var dioHttpEngine = DioHttpEngine(
@@ -60,6 +59,12 @@ class _MyHomePageState extends State<MyHomePage> {
     var param = {"city": "雅安", "key": "6880a0c6e99ba78cbbf7207fd35528b3"};
     var resp = await dioHttpEngine.requestFuture<WeatherModel>(
         RequestMethod.get, url,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+        ),
         queryParameters: param);
 
     setState(() {

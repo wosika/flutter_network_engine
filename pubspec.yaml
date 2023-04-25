@@ -1,6 +1,6 @@
 name: flutter_network_engine
 description: A new Flutter project.
-version: 0.0.2
+version: 0.0.3
 homepage:
 
 environment:
@@ -19,7 +19,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
 
-
+publish_to: none
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
