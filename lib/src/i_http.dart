@@ -22,9 +22,11 @@ abstract class IHttp {
 
   void setBaseUrl(String url);
 
-  Future<void> request<T>(RequestMethod method,
+  Future<void> request<T>(
+    RequestMethod method,
     String url, {
     Map<String, dynamic>? queryParameters,
+    Object? data,
     bool isList,
     Options? options,
     CancelToken? cancelToken,
@@ -35,6 +37,7 @@ abstract class IHttp {
 
   Future<ResponseResult<T>> requestFuture<T>(RequestMethod method, String url,
       {Map<String, dynamic>? queryParameters,
+      Object? data,
       Options? options,
       CancelToken? cancelToken});
 }

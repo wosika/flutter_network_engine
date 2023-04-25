@@ -16,14 +16,13 @@ class DioHttpEngine extends IHttp {
   Function(String?)? _showError;
   JsonParser? _jsonParser;
 
-  DioHttpEngine({
-    Duration? timeout,
-    String? baseUrl,
-    bool? printLog,
-    OnShowLoading? onShowLoading,
-    Function(String? message)? onShowError,
-    JsonParser? jsonParser
-  }) {
+  DioHttpEngine(
+      {Duration? timeout,
+      String? baseUrl,
+      bool? printLog,
+      OnShowLoading? onShowLoading,
+      Function(String? message)? onShowError,
+      JsonParser? jsonParser}) {
     if (timeout != null) {
       _timeout = timeout;
     }
@@ -70,6 +69,7 @@ class DioHttpEngine extends IHttp {
   @override
   Future<void> request<T>(RequestMethod method, String url,
       {Map<String, dynamic>? queryParameters,
+      Object? data,
       bool isList = false,
       Options? options,
       CancelToken? cancelToken,
@@ -82,6 +82,7 @@ class DioHttpEngine extends IHttp {
       String? errorText}) async {
     var respModel = await requestFuture<T>(method, url,
         queryParameters: queryParameters,
+        data: data,
         options: options,
         cancelToken: cancelToken,
         isShowLoading: isShowLoading,
@@ -103,6 +104,7 @@ class DioHttpEngine extends IHttp {
   @override
   Future<ResponseResult<T>> requestFuture<T>(RequestMethod method, String url,
       {Map<String, dynamic>? queryParameters,
+      Object? data,
       Options? options,
       CancelToken? cancelToken,
       bool isShowLoading = false,
@@ -118,11 +120,11 @@ class DioHttpEngine extends IHttp {
     }
     try {
       Response response = await _dio!.request(url,
-          queryParameters: method == RequestMethod.get ? queryParameters : null,
-          data: method == RequestMethod.post ? queryParameters : null,
+          queryParameters: queryParameters,
+          data: data,
           options: options ?? Options(method: method.name),
           cancelToken: cancelToken);
-      return ResponseResult<T>(response: response,jsonParser: _jsonParser);
+      return ResponseResult<T>(response: response, jsonParser: _jsonParser);
     } on DioError catch (e) {
       if (_printLog && e.type != DioErrorType.cancel) {
         log("网络请求错误", error: e);
@@ -131,7 +133,7 @@ class DioHttpEngine extends IHttp {
       if (e.type != DioErrorType.cancel && (isShowError)) {
         _showError?.call(errorText ?? _getErrorDes(e));
       }
-      return ResponseResult<T>(error: e,jsonParser: _jsonParser);
+      return ResponseResult<T>(error: e, jsonParser: _jsonParser);
     } catch (e) {
       if (_printLog) {
         log("网络请求错误", error: e);
@@ -139,7 +141,7 @@ class DioHttpEngine extends IHttp {
       if (isShowError) {
         _showError?.call(errorText ?? e.toString());
       }
-      return ResponseResult<T>(error: e,jsonParser: _jsonParser);
+      return ResponseResult<T>(error: e, jsonParser: _jsonParser);
     } finally {
       if (isShowLoading) {
         _showLoading?.call(false);
@@ -149,6 +151,7 @@ class DioHttpEngine extends IHttp {
 
   Future<ResponseResult<T>> getFuture<T>(String url,
       {Map<String, dynamic>? queryParameters,
+      Object? data,
       Options? options,
       CancelToken? cancelToken,
       bool isShowLoading = false,
@@ -157,6 +160,7 @@ class DioHttpEngine extends IHttp {
       String? errorText}) {
     return requestFuture(RequestMethod.get, url,
         queryParameters: queryParameters,
+        data: data,
         options: options,
         cancelToken: cancelToken,
         isShowError: isShowError,
@@ -167,6 +171,7 @@ class DioHttpEngine extends IHttp {
 
   Future<ResponseResult<T>> postFuture<T>(String url,
       {Map<String, dynamic>? queryParameters,
+      Object? data,
       Options? options,
       CancelToken? cancelToken,
       bool isShowLoading = false,
@@ -175,6 +180,7 @@ class DioHttpEngine extends IHttp {
       String? errorText}) {
     return requestFuture(RequestMethod.post, url,
         queryParameters: queryParameters,
+        data: data,
         options: options,
         cancelToken: cancelToken,
         isShowError: isShowError,
@@ -185,6 +191,7 @@ class DioHttpEngine extends IHttp {
 
   void post<T>(String url,
       {Map<String, dynamic>? queryParameters,
+      Object? data,
       bool isList = false,
       Options? options,
       CancelToken? cancelToken,
@@ -197,6 +204,7 @@ class DioHttpEngine extends IHttp {
       String? errorText}) {
     request<T>(RequestMethod.post, url,
         queryParameters: queryParameters,
+        data: data,
         isList: isList,
         options: options,
         cancelToken: cancelToken,
@@ -211,6 +219,7 @@ class DioHttpEngine extends IHttp {
 
   void get<T>(String url,
       {Map<String, dynamic>? queryParameters,
+      Object? data,
       bool isList = false,
       Options? options,
       CancelToken? cancelToken,
@@ -223,6 +232,7 @@ class DioHttpEngine extends IHttp {
       String? errorText}) {
     request<T>(RequestMethod.get, url,
         queryParameters: queryParameters,
+        data: data,
         isList: isList,
         options: options,
         cancelToken: cancelToken,
