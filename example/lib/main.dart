@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_network_engine/flutter_network_engine.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'model/weather_model.dart';
+import 'package:dio/dio.dart';
 
 
 //全局的网络请求引擎
