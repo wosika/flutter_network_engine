@@ -37,7 +37,7 @@ dependencies:
         # 远程git集成
         git:
             #仓库地址
-            url: http://git1.51xinwei.com:20001/app/flutter/flutter_network_engine.git
+            url: git@github.com:wosika/flutter_network_engine.git
             #指定分支
             ref: dev
 
