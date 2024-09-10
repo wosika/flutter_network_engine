@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_network_engine/src/request_type.dart';
 import 'i_http.dart';
