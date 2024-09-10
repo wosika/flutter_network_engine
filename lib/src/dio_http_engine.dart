@@ -125,12 +125,12 @@ class DioHttpEngine extends IHttp {
           options: options ?? Options(method: method.name),
           cancelToken: cancelToken);
       return ResponseResult<T>(response: response, jsonParser: _jsonParser);
-    } on DioError catch (e) {
-      if (_printLog && e.type != DioErrorType.cancel) {
+    } on DioException catch (e) {
+      if (_printLog && e.type != DioExceptionType.cancel) {
         log("网络请求错误", error: e);
       }
       //是取消的请求不显示错误提示
-      if (e.type != DioErrorType.cancel && (isShowError)) {
+      if (e.type != DioExceptionType.cancel && (isShowError)) {
         _showError?.call(errorText ?? _getErrorDes(e));
       }
       return ResponseResult<T>(error: e, jsonParser: _jsonParser);
@@ -250,22 +250,22 @@ class DioHttpEngine extends IHttp {
     _dio?.close();
   }
 
-  static String? _getErrorDes(DioError error) {
+  static String? _getErrorDes(DioException error) {
     String? errorDes = '';
     switch (error.type) {
-      case DioErrorType.cancel:
+      case DioExceptionType.cancel:
         errorDes = '请求取消';
         break;
-      case DioErrorType.connectionTimeout:
+      case DioExceptionType.connectionTimeout:
         errorDes = '连接超时';
         break;
-      case DioErrorType.sendTimeout:
+      case DioExceptionType.sendTimeout:
         errorDes = '请求超时';
         break;
-      case DioErrorType.receiveTimeout:
+      case DioExceptionType.receiveTimeout:
         errorDes = '响应超时';
         break;
-      case DioErrorType.badResponse:
+      case DioExceptionType.badResponse:
         {
           try {
             errorDes = error.response!.data != null
@@ -276,13 +276,15 @@ class DioHttpEngine extends IHttp {
           }
         }
         break;
-      case DioErrorType.unknown:
+
+      case DioExceptionType.connectionError:
         {
-          if (error.error is SocketException) {
-            errorDes = '网络请求错误';
-          } else {
-            errorDes = '未知错误';
-          }
+          errorDes = '网络请求错误';
+        }
+        break;
+      case DioExceptionType.unknown:
+        {
+          errorDes = '未知错误';
           break;
         }
       default:

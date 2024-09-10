@@ -35,8 +35,8 @@ class ResponseResult<T> with IResult<T> {
 
   ResponseResult({this.response, this.error, JsonParser? jsonParser}) {
     _jsonParser = jsonParser;
-    if (error != null && error is DioError) {
-      this.response = (error as DioError).response;
+    if (error != null && error is DioException) {
+      this.response = (error as DioException).response;
     }
 
     try {
