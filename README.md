@@ -31,15 +31,7 @@ var dioHttpEngine = DioHttpEngine(
 ```
 dependencies:
 
-    flutter_network_engine:
-        # 本地目录集成
-        path: ../
-        # 远程git集成
-        git:
-            #仓库地址
-            url: git@github.com:wosika/flutter_network_engine.git
-            #指定分支
-            ref: dev
+    flutter_network_engine: ^0.0.6
 
 ```
 

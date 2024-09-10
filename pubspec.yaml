@@ -1,5 +1,5 @@
 name: flutter_network_engine
-description: A new Flutter project.
+description: Network request library based on dio.
 version: 0.0.5
 homepage: https://github.com/wosika/flutter_network_engine
 
