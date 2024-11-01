@@ -10,7 +10,7 @@ var dioHttpEngine = DioHttpEngine(
     //网络请求超时时间
     timeout: const Duration(seconds: 8),
     //基类url
-    baseUrl: "https://apis.juhe.cn", 
+    baseUrl: "your base url", 
     //json解析函数
     jsonParser: ModelFactory.generateOBJ ,
     //是否显示log
@@ -31,7 +31,7 @@ var dioHttpEngine = DioHttpEngine(
 ```
 dependencies:
 
-    flutter_network_engine: ^0.0.6
+    flutter_network_engine: ^0.0.7
 
 ```
 
