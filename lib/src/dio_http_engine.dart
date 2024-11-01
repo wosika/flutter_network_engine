@@ -59,11 +59,6 @@ class DioHttpEngine extends IHttp {
     return _dio;
   }
 
-  @override
-  @Deprecated("目前baseUrl通过拦截器实现,请勿直接设置") //目前baseUrl通过拦截器实现,请勿直接设置
-  void setBaseUrl(String url) {
-    _dio!.options.baseUrl = url;
-  }
 
   @override
   Future<void> request<T>(RequestMethod method, String url,
@@ -157,7 +152,7 @@ class DioHttpEngine extends IHttp {
       bool isShowError = false,
       String? loadingText,
       String? errorText}) {
-    return requestFuture(RequestMethod.get, url,
+    return requestFuture<T>(RequestMethod.get, url,
         queryParameters: queryParameters,
         data: data,
         options: options,
@@ -177,7 +172,7 @@ class DioHttpEngine extends IHttp {
       bool isShowError = false,
       String? loadingText,
       String? errorText}) {
-    return requestFuture(RequestMethod.post, url,
+    return requestFuture<T>(RequestMethod.post, url,
         queryParameters: queryParameters,
         data: data,
         options: options,

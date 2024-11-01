@@ -65,7 +65,7 @@ class ResponseResult<T> with IResult<T> {
       data = json as T?;
     } else {
     //  log("泛型是不是string也不是map");
-      data = _jsonParser?.call(json);
+      data = _jsonParser?.call<T>(json);
     }
   }
 
@@ -75,7 +75,7 @@ class ResponseResult<T> with IResult<T> {
       if (T is String) {
         listData!.add(item.toString() as T);
       } else {
-        var obj = _jsonParser?.call(item);
+        var obj = _jsonParser?.call<T>(item);
         if (obj != null) {
           listData!.add(obj);
         }

@@ -20,8 +20,6 @@ typedef JsonParser = T? Function<T>(dynamic json);
 abstract class IHttp {
   void destroy();
 
-  void setBaseUrl(String url);
-
   Future<void> request<T>(
     RequestMethod method,
     String url, {
