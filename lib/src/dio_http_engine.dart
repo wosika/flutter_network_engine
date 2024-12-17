@@ -121,15 +121,17 @@ class DioHttpEngine extends IHttp {
       if (_printLog && e.type != DioExceptionType.cancel) {
         log("network request error", error: e);
       }
+      var result = ResponseResult<T>(
+          error: e, response: e.response, jsonParser: _jsonParser);
       //是取消的请求不显示错误提示
       if (e.type != DioExceptionType.cancel && (isShowError)) {
         _showError?.call(
-          code: e.response?.statusCode,
-          msg: e.response?.statusMessage,
-          error: e.message,
+          code: result.getCode(),
+          msg: result.getMessage(),
+          error: result.getError(),
         );
       }
-      return ResponseResult<T>(error: e, jsonParser: _jsonParser);
+      return result;
     } catch (e) {
       if (_printLog) {
         log("network request error", error: e);
