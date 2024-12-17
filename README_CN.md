@@ -93,4 +93,58 @@ var resp = await dioHttpEngine.requestFuture<YourModel>(
 var data = resp.getData();
 ```
 
-更多使用示例请参考 [example](example/lib/main.dart)
+### 错误处理
+
+框架提供了内置的错误处理功能，通过 `onShowError` 回调来自定义错误展示方式：
+
+```dart
+DioHttpEngine(
+    // ... 其他配置
+    onShowError: ({int? code, String? msg, dynamic error}) {
+        // 根据错误码或消息处理错误
+        if (code == 404) {
+            // 处理未找到错误
+        } else if (code == 401) {
+            // 处理未授权错误
+        }
+        // 向用户展示错误信息
+    }
+);
+```
+
+### 加载状态管理
+
+处理网络请求过程中的加载状态：
+
+```dart
+DioHttpEngine(
+    // ... 其他配置
+    onShowLoading: (bool isShow, {String? msg}) {
+        if (isShow) {
+            // 显示加载指示器
+            // 可以使用可选的消息参数
+        } else {
+            // 隐藏加载指示器
+        }
+    }
+);
+```
+
+## 特性
+
+- 易于集成和使用
+- 可自定义响应处理
+- 内置错误处理
+- 加载状态管理
+- 支持拦截器
+- 类型安全的响应解析
+- 可配置的超时和基础 URL
+- 完整的日志选项
+
+## 高级用法
+
+更多高级用法示例和完整的实现细节，请参考仓库中的 [示例代码](example/lib/main.dart)。
+
+## 贡献
+
+欢迎提交 Pull Request 来改进这个项目！
