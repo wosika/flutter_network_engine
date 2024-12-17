@@ -1,3 +1,12 @@
+
+## 0.1.2
+
+* upgrade documentation
+
+## 0.1.1
+
+* fix error management
+
 ## 0.1.0
 
 * Documentation improvements:

@@ -1,6 +1,6 @@
 name: flutter_network_engine
 description: Network request library based on dio.
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/wosika/flutter_network_engine
 
 environment:

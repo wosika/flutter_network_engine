@@ -1,4 +1,5 @@
 # flutter_network_engine
+[![Pub](https://img.shields.io/pub/v/flutter_network_engine.svg)](https://pub.dev/packages/flutter_network_engine)  
 基于Dio实现的网络请求框架
 
 [English](README.md)
@@ -9,7 +10,7 @@
 
 ```yaml
 dependencies:
-    flutter_network_engine: ^0.1.0
+    flutter_network_engine: ^0.1.2
 ```
 
 ## 基础配置

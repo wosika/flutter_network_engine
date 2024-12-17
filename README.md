@@ -1,6 +1,7 @@
 # flutter_network_engine
-
+[![Pub](https://img.shields.io/pub/v/flutter_network_engine.svg)](https://pub.dev/packages/flutter_network_engine)  
 A network request framework based on Dio for Flutter applications.
+
 
 [中文文档](README_CN.md)
 
@@ -10,7 +11,7 @@ Add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-    flutter_network_engine: ^0.1.0
+    flutter_network_engine: ^0.1.2
 ```
 
 ## Basic Configuration
