@@ -10,9 +10,9 @@ typedef OnSuccess<T> = Function(T t);
 typedef OnSuccessList<T> = Function(List<T>? list);
 
 ///请求失败
-typedef OnError = Function(int? code, String? msg);
+typedef OnError = Function({int? code, String? msg, dynamic error});
 
-typedef OnShowLoading = Function(bool isShow, [String? msg]);
+typedef OnShowLoading = Function(bool isShow, {String? msg});
 
 //json解析函数
 typedef JsonParser = T? Function<T>(dynamic json);

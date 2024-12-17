@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter_network_engine/src/request_type.dart';
@@ -12,7 +11,7 @@ class DioHttpEngine extends IHttp {
   String _baseUrl = "";
   bool _printLog = true;
   OnShowLoading? _showLoading;
-  Function(String?)? _showError;
+  OnError? _showError;
   JsonParser? _jsonParser;
 
   DioHttpEngine(
@@ -20,7 +19,7 @@ class DioHttpEngine extends IHttp {
       String? baseUrl,
       bool? printLog,
       OnShowLoading? onShowLoading,
-      Function(String? message)? onShowError,
+      OnError? onShowError,
       JsonParser? jsonParser}) {
     if (timeout != null) {
       _timeout = timeout;
@@ -59,7 +58,6 @@ class DioHttpEngine extends IHttp {
     return _dio;
   }
 
-
   @override
   Future<void> request<T>(RequestMethod method, String url,
       {Map<String, dynamic>? queryParameters,
@@ -91,7 +89,7 @@ class DioHttpEngine extends IHttp {
         onSuccess?.call(respModel.getData());
       }
     } else {
-      onError?.call(respModel.getCode(), respModel.getMessage());
+      onError?.call(code: respModel.getCode(), msg: respModel.getMessage());
     }
   }
 
@@ -110,7 +108,7 @@ class DioHttpEngine extends IHttp {
     }
 
     if (isShowLoading) {
-      _showLoading?.call(true, loadingText);
+      _showLoading?.call(true, msg: loadingText);
     }
     try {
       Response response = await _dio!.request(url,
@@ -121,19 +119,27 @@ class DioHttpEngine extends IHttp {
       return ResponseResult<T>(response: response, jsonParser: _jsonParser);
     } on DioException catch (e) {
       if (_printLog && e.type != DioExceptionType.cancel) {
-        log("网络请求错误", error: e);
+        log("network request error", error: e);
       }
       //是取消的请求不显示错误提示
       if (e.type != DioExceptionType.cancel && (isShowError)) {
-        _showError?.call(errorText ?? _getErrorDes(e));
+        _showError?.call(
+          code: e.response?.statusCode,
+          msg: e.response?.statusMessage,
+          error: e.message,
+        );
       }
       return ResponseResult<T>(error: e, jsonParser: _jsonParser);
     } catch (e) {
       if (_printLog) {
-        log("网络请求错误", error: e);
+        log("network request error", error: e);
       }
       if (isShowError) {
-        _showError?.call(errorText ?? e.toString());
+        _showError?.call(
+          code: -1,
+          msg: e.toString(),
+          error: e,
+        );
       }
       return ResponseResult<T>(error: e, jsonParser: _jsonParser);
     } finally {
@@ -242,54 +248,5 @@ class DioHttpEngine extends IHttp {
   @override
   void destroy() {
     _dio?.close();
-  }
-
-  static String? _getErrorDes(DioException error) {
-    String? errorDes = '';
-    switch (error.type) {
-      case DioExceptionType.cancel:
-        errorDes = '请求取消';
-        break;
-      case DioExceptionType.connectionTimeout:
-        errorDes = '连接超时';
-        break;
-      case DioExceptionType.sendTimeout:
-        errorDes = '请求超时';
-        break;
-      case DioExceptionType.receiveTimeout:
-        errorDes = '响应超时';
-        break;
-      case DioExceptionType.badResponse:
-        {
-          try {
-            errorDes = error.response!.data != null
-                ? _getErrorInfo(jsonDecode(error.response!.data))
-                : error.response!.data;
-          } on Exception catch (_) {
-            errorDes = '未知错误';
-          }
-        }
-        break;
-
-      case DioExceptionType.connectionError:
-        {
-          errorDes = '网络请求错误';
-        }
-        break;
-      case DioExceptionType.unknown:
-        {
-          errorDes = '未知错误';
-          break;
-        }
-      default:
-        errorDes = '未知错误';
-        break;
-    }
-
-    return errorDes;
-  }
-
-  static String _getErrorInfo(Map<String, dynamic> data) {
-    return "";
   }
 }

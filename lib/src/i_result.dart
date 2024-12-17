@@ -1,8 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
-import 'package:dio/dio.dart';
-
 import '../flutter_network_engine.dart';
 
 mixin IResult<T> {
@@ -32,6 +29,9 @@ class ResponseResult<T> with IResult<T> {
   List<T>? listData;
 
   JsonParser? _jsonParser;
+  static int? Function(ResponseResult result, Type dataType)? onGetCode;
+  static String? Function(ResponseResult result, Type dataType)? onGetMessage;
+  static bool Function(ResponseResult result, Type dataType)? onIsSuccess;
 
   ResponseResult({this.response, this.error, JsonParser? jsonParser}) {
     _jsonParser = jsonParser;
@@ -42,7 +42,7 @@ class ResponseResult<T> with IResult<T> {
     try {
       var json = jsonDecode(response?.data);
       if (json is List) {
-       // log("解析数组数据");
+        // log("解析数组数据");
         _parseListData(json);
       } else {
         parseSingleData(json);
@@ -52,19 +52,18 @@ class ResponseResult<T> with IResult<T> {
       log(e.toString());
       data = response?.data as T?;
     }
-
   }
 
   void parseSingleData(json) {
-   // log("解析单个数据");
+    // log("解析单个数据");
     if (T is String) {
-   //   log("泛型是String");
+      //   log("泛型是String");
       data = json.toString() as T;
     } else if (T is Map) {
-   //   log("泛型是Map");
+      //   log("泛型是Map");
       data = json as T?;
     } else {
-    //  log("泛型是不是string也不是map");
+      //  log("泛型是不是string也不是map");
       data = _jsonParser?.call<T>(json);
     }
   }
@@ -85,7 +84,7 @@ class ResponseResult<T> with IResult<T> {
 
   @override
   int? getCode() {
-    return response?.statusCode;
+    return onGetCode != null ? onGetCode!(this, T) : response?.statusCode;
   }
 
   @override
@@ -94,7 +93,7 @@ class ResponseResult<T> with IResult<T> {
   }
 
   @override
-  getError() {
+  dynamic getError() {
     return error;
   }
 
@@ -105,13 +104,17 @@ class ResponseResult<T> with IResult<T> {
 
   @override
   String? getMessage() {
-    return response?.statusMessage;
+    return onGetMessage != null
+        ? onGetMessage!(this, T)
+        : response?.statusMessage;
   }
 
   @override
   bool isSuccess() {
-    return response?.statusCode != null &&
-        response!.statusCode! >= 200 &&
-        response!.statusCode! < 300;
+    return onIsSuccess != null
+        ? onIsSuccess!(this, T)
+        : response?.statusCode != null &&
+            response!.statusCode! >= 200 &&
+            response!.statusCode! < 300;
   }
 }

@@ -3,25 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_network_engine/flutter_network_engine.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 import 'model/weather_model.dart';
-import 'package:dio/dio.dart';
-
 
 //全局的网络请求引擎
-var dioHttpEngine = DioHttpEngine(
-    timeout: const Duration(seconds: 8),
-    baseUrl: "https://apis.juhe.cn",
-    printLog: true,
-    jsonParser: ModelFactory.generateOBJ,
-    onShowError: (String? message)=>{},
-    onShowLoading: (bool isShow,[String? message])=>{}
-)
-  ..addInterceptor(TalkerDioLogger(
-    settings: const TalkerDioLoggerSettings(
-      printRequestHeaders: true,
-      printResponseHeaders: true,
-      printResponseMessage: true,
-    ),
-  ));
+late DioHttpEngine dioHttpEngine;
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +17,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    initNetworkEngine();
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -40,6 +26,39 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
+  }
+
+  void initNetworkEngine() {
+    ResponseResult.onGetCode = (ResponseResult result, Type dataType) {
+      //you can custom your code
+      return result.response?.statusCode;
+    };
+    ResponseResult.onGetMessage = (ResponseResult result, Type dataType) {
+      //you can custom your message
+      return result.response?.statusMessage;
+    };
+    ResponseResult.onIsSuccess = (ResponseResult result, Type dataType) {
+      //you can custom your isSuccess
+      return result.response?.statusCode != null &&
+          result.response!.statusCode! >= 200 &&
+          result.response!.statusCode! < 300;
+    };
+
+    //init
+    dioHttpEngine = DioHttpEngine(
+      timeout: const Duration(seconds: 8),
+      baseUrl: "https://apis.juhe.cn",
+      printLog: true,
+      jsonParser: ModelFactory.generateOBJ,
+      onShowError: ({int? code, String? msg, dynamic error}) {},
+      onShowLoading: (bool isShow, {String? msg}) {},
+    )..addInterceptor(TalkerDioLogger(
+        settings: const TalkerDioLoggerSettings(
+          printRequestHeaders: true,
+          printResponseHeaders: true,
+          printResponseMessage: true,
+        ),
+      ));
   }
 }
 
@@ -58,15 +77,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter() async {
     String url = "https://apis.juhe.cn/simpleWeather/query";
     var param = {"city": "雅安", "key": "6880a0c6e99ba78cbbf7207fd35528b3"};
-    var resp = await dioHttpEngine.requestFuture<WeatherModel>(
-        RequestMethod.get, url,
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-        ),
-        queryParameters: param);
+    var resp =
+        await dioHttpEngine.requestFuture<WeatherModel>(RequestMethod.get, url,
+            options: Options(
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+              },
+            ),
+            queryParameters: param);
 
     setState(() {
       resultData = resp.getData()?.errorCode?.toString() ?? "123";
