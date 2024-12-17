@@ -89,7 +89,10 @@ class DioHttpEngine extends IHttp {
         onSuccess?.call(respModel.getData());
       }
     } else {
-      onError?.call(code: respModel.getCode(), msg: respModel.getMessage());
+      onError?.call(
+          code: respModel.getCode(),
+          msg: respModel.getMessage(),
+          error: respModel.getError());
     }
   }
 
@@ -124,7 +127,7 @@ class DioHttpEngine extends IHttp {
       var result = ResponseResult<T>(
           error: e, response: e.response, jsonParser: _jsonParser);
       //是取消的请求不显示错误提示
-      if (e.type != DioExceptionType.cancel && (isShowError)) {
+      if (e.type != DioExceptionType.cancel && isShowError) {
         _showError?.call(
           code: result.getCode(),
           msg: result.getMessage(),
