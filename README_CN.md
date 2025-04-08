@@ -10,7 +10,7 @@
 
 ```yaml
 dependencies:
-    flutter_network_engine: ^0.1.2
+    flutter_network_engine: ^0.1.3
 ```
 
 ## 基础配置
