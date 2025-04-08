@@ -1,3 +1,7 @@
+## 0.1.3
+
+* upgrade dio to 5.8.0+1
+* add patch request type
 
 ## 0.1.2
 
