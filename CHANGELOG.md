@@ -1,3 +1,9 @@
+## 0.2.0
+
+* add global log switch `DioHttpEngine.enableLog` to control log output for better performance
+* fix type checking in ResponseResult
+* update log output format
+
 ## 0.1.3
 
 * upgrade dio to 5.8.0+1
