@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-import '../flutter_network_engine.dart';
+import 'package:flutter_network_engine/flutter_network_engine.dart';
 
 mixin IResult<T> {
   //网络请求是否成功
@@ -36,7 +36,7 @@ class ResponseResult<T> with IResult<T> {
   ResponseResult({this.response, this.error, JsonParser? jsonParser}) {
     _jsonParser = jsonParser;
     if (error != null && error is DioException) {
-      this.response = (error as DioException).response;
+      response = (error as DioException).response;
     }
 
     try {
@@ -49,21 +49,21 @@ class ResponseResult<T> with IResult<T> {
       }
     } catch (e) {
       //直接将data返回
-      log(e.toString());
-      data = response?.data as T?;
+      log("$e\n${response?.statusCode}\n${response?.statusMessage}\n${response?.data}");
+      // 基础类型（String/int/double/bool）直接赋值，否则忽略
+      if (response?.data == null || response?.data is T) {
+        data = response?.data as T?;
+      }
     }
   }
 
   void parseSingleData(json) {
     // log("解析单个数据");
-    if (T is String) {
-      //   log("泛型是String");
+    if (T == String) {
       data = json.toString() as T;
-    } else if (T is Map) {
-      //   log("泛型是Map");
+    } else if (T == Map || json is T) {
       data = json as T?;
     } else {
-      //  log("泛型是不是string也不是map");
       data = _jsonParser?.call<T>(json);
     }
   }
@@ -71,7 +71,7 @@ class ResponseResult<T> with IResult<T> {
   void _parseListData(List<dynamic> json) {
     listData = [];
     for (var item in json) {
-      if (T is String) {
+      if (T == String) {
         listData!.add(item.toString() as T);
       } else {
         var obj = _jsonParser?.call<T>(item);
