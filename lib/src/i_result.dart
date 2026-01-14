@@ -49,7 +49,9 @@ class ResponseResult<T> with IResult<T> {
       }
     } catch (e) {
       //直接将data返回
-      log("$e\n${response?.statusCode}\n${response?.statusMessage}\n${response?.data}");
+      if (DioHttpEngine.enableLog) {
+        log("$e\n${response?.statusCode}\n${response?.statusMessage}\n${response?.data}");
+      }
       // 基础类型（String/int/double/bool）直接赋值，否则忽略
       if (response?.data == null || response?.data is T) {
         data = response?.data as T?;

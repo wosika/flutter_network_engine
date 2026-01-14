@@ -6,6 +6,9 @@ import 'i_http.dart';
 import 'i_result.dart';
 
 class DioHttpEngine extends IHttp {
+  /// 全局日志开关，控制所有日志输出
+  static bool enableLog = true;
+
   Dio? _dio;
   Duration _timeout = const Duration(seconds: 8000);
   String _baseUrl = "";
@@ -121,7 +124,7 @@ class DioHttpEngine extends IHttp {
           cancelToken: cancelToken);
       return ResponseResult<T>(response: response, jsonParser: _jsonParser);
     } on DioException catch (e) {
-      if (_printLog && e.type != DioExceptionType.cancel) {
+      if (enableLog && _printLog && e.type != DioExceptionType.cancel) {
         log("network request error", error: e);
       }
       var result = ResponseResult<T>(
@@ -136,7 +139,7 @@ class DioHttpEngine extends IHttp {
       }
       return result;
     } catch (e) {
-      if (_printLog) {
+      if (enableLog && _printLog) {
         log("network request error", error: e);
       }
       if (isShowError) {
